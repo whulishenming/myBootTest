@@ -41,7 +41,7 @@ public class WebLogAspect {
         Object result = joinPoint.proceed();
         // 处理完请求，返回内容
         log.info("RESPONSE : " + result + "SPEND TIME : " + (System.currentTimeMillis() - startTime.get()) + "ms");
-        return request;
+        return result;
     }
 
 }

@@ -28,19 +28,20 @@ public class SenderServiceImpl implements ISenderService {
     }
 
     @Override
-    public void send(String massage) {
+    public void send(String massage, String queueName) {
 
-        /**
+        rabbitTemplate.convertAndSend(queueName, massage);
+       /* *//**
          *  MessagePostProcessor 可以对message进行处理，如指定编码，设置messageID
-         */
-        rabbitTemplate.convertAndSend(RabbitMQConfig.STRING_QUEUE_NAME, (Object)massage, new MessagePostProcessor() {
+         *//*
+        rabbitTemplate.convertAndSend(queueName, (Object)massage, new MessagePostProcessor() {
             @Override
             public Message postProcessMessage(Message message) throws AmqpException {
                 message.getMessageProperties().setReceivedDelay(1000);
                 message.getMessageProperties().setMessageId(UUID.randomUUID().toString());
                 return message;
             }
-        });
+        });*/
     }
 
     @Override

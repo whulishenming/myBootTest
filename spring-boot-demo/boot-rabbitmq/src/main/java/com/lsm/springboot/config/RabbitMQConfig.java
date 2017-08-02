@@ -24,6 +24,8 @@ public class RabbitMQConfig {
 
     public static final String STRING_QUEUE_NAME = "string_queen";
 
+    public static final String STRING_QUEUE_NAME_2 = "string_queen_2";
+
     public final static String MESSAGE = "topic.message";
 
     public final static String MESSAGES = "topic.messages";
@@ -47,6 +49,11 @@ public class RabbitMQConfig {
     @Bean
     public Queue stringQueue() {
         return new Queue(STRING_QUEUE_NAME);
+    }
+
+    @Bean
+    public Queue stringQueue2() {
+        return new Queue(STRING_QUEUE_NAME_2);
     }
 
     /**

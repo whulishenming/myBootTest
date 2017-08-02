@@ -1,6 +1,7 @@
 package com.lsm.springboot.service.impl;
 
 import com.lsm.springboot.BaseTest;
+import com.lsm.springboot.config.RabbitMQConfig;
 import com.lsm.springboot.service.ISenderService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,19 @@ public class SenderServiceImplTest extends BaseTest {
 
     @Test
     public void testSend2(){
-        String massage = "hi, i am MESSAGE 1";
+        for (int i = 200; i < 250; i++) {
 
-        senderServiceImpl.send(massage);
+            if (i % 2 == 0){
+                String massage = "hi, i am MESSAGE" + i;
+                senderServiceImpl.send(massage, RabbitMQConfig.STRING_QUEUE_NAME);
+            }else{
+                String massage = "hi, i am MESSAGE to queue2" + i;
+                senderServiceImpl.send(massage, RabbitMQConfig.STRING_QUEUE_NAME_2);
+            }
+
+
+        }
+
     }
 
     @Test

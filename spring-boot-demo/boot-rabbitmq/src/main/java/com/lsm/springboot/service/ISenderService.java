@@ -9,7 +9,7 @@ public interface ISenderService {
 
     void send(Map<String, String> massage);
 
-    void send(String massage);
+    void send(String massage, String queueName);
 
     void sendTopicMassage1();
 

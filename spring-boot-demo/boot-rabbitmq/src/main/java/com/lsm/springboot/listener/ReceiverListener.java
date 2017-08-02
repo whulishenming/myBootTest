@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by lishenming on 2017/6/12.
@@ -24,16 +28,15 @@ public class ReceiverListener {
         System.out.println("Receiver object : " + message);
     }
 
-   /* @RabbitHandler
-    @RabbitListener(queues = RabbitMQConfig.STRING_QUEUE_NAME, containerFactory="rabbitListenerContainerFactory")
+    @RabbitHandler
+    @RabbitListener(queues = {RabbitMQConfig.STRING_QUEUE_NAME, RabbitMQConfig.STRING_QUEUE_NAME_2}, containerFactory="rabbitListenerContainerFactory")
     public void processString(String message) {
 
-        System.out.println("Receiver string : " + message);
-        throw new  RuntimeException("error");
+        System.out.println("Receiver String message : " + message);
 
-    }*/
+    }
 
-    @RabbitHandler
+   /* @RabbitHandler
     @RabbitListener(queues = RabbitMQConfig.STRING_QUEUE_NAME, containerFactory="rabbitListenerContainerFactory")
     public void processString(Message message, Channel channel) {
         String messageId = message.getMessageProperties().getMessageId();
@@ -47,7 +50,9 @@ public class ReceiverListener {
 
 //        throw new  RuntimeException("error");
 
-    }
+    }*/
+
+
 
     @RabbitHandler
     @RabbitListener(queues = RabbitMQConfig.MESSAGE, containerFactory="rabbitListenerContainerFactory")
