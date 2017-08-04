@@ -67,11 +67,6 @@
             </Policies>
         </RollingFile>
 
-        <!-- 配置mongdb appender -->
-        <NoSql name="mongoAppender" bufferSize="10"><!--建议bufferSize配置,减少频繁写操作。 -->
-            <MongoDb databaseName="springBoot_log" collectionName="log" server="127.0.0.1" port="27017"/>
-        </NoSql>
-
     </Appenders>
     <loggers>
         <!--单独指定日志的形式，比如要为指定包下的class指定不同的日志级别-->
@@ -86,8 +81,6 @@
             <appender-ref ref="RollingFileInfo" />
             <appender-ref ref="RollingFileWarn" />
             <appender-ref ref="RollingFileError" />
-            <!-- 输出日志到mongodb -->
-            <appender-ref ref="mongoAppender" />
         </root>
 
     </loggers>
