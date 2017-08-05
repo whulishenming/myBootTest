@@ -19,7 +19,7 @@ public class DataSourceConfig {
     @Value("${datasource.driverClassName}")
     private String driverClassName;
 
-    @Value("${datasource.url}")
+    @Value("${datasource.jpa.url}")
     private String url;
 
     @Bean

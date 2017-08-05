@@ -22,9 +22,10 @@
 		<module>boot-elasticsearch-spring-data</module>
 		<module>boot-elasticsearch-java-api</module>
         <module>boot-lsm-starter</module>
+        <module>boot-spring-data-jpa</module>
         <!--
         
-        <module>lsm-starter</module>-->
+        <module>boot-spring-data-jpa</module>-->
 		
     </modules>
 

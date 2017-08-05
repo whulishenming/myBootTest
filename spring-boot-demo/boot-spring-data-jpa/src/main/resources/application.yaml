@@ -3,7 +3,7 @@ datasource:
   username: lishenming
   driverClassName: com.mysql.jdbc.Driver
   jpa:
-    url: "jdbc:mysql://192.168.31.80:3306/jpa?characterEncoding=UTF-8"
+    url: "jdbc:mysql://192.168.31.80:3306/jpa?characterEncoding=UTF-8&useSSL=false"
 logging:
   config: "classpath:log4j2_dev.xml"
 server:

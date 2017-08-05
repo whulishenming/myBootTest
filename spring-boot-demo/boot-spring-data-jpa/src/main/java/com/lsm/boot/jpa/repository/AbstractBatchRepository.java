@@ -1,29 +1,30 @@
 package com.lsm.boot.jpa.repository;
 
+import org.hibernate.FlushMode;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityManager;
 import java.util.List;
 
-/**
- * http://blog.csdn.net/xiewenbo/article/details/8574521
- * http://www.cnblogs.com/IcanFixIt/p/7042977.html
- * http://blog.csdn.net/zh921112/article/details/37694257
- * @param <T>
- */
 public abstract class AbstractBatchRepository<T> {
 
     @Autowired
-    private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
     @Transactional()
     public void batchInsert(List<T> list) {
+        Session session = (Session)entityManager.getDelegate();
+        session.setFlushMode(FlushMode.MANUAL);
         for (int i = 0; i < list.size(); i++) {
-            em.persist(list.get(i));
-            if (i % 100 == 0) {
-                em.flush();
-                em.clear();
+            session.save(list.get(i));
+//            entityManager.persist(list.get(i));
+            if (i % 25 == 0) {
+                session.flush();
+                session.clear();
+                /*entityManager.flush();
+                entityManager.clear();*/
             }
         }
     }
