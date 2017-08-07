@@ -19,13 +19,14 @@
 		<module>boot-scheduling</module>
         <module>boot-webSocket</module>
         <module>boot-mybatis</module>
-		<module>boot-elasticsearch-spring-data</module>
+		<module>boot-elasticsearch-data</module>
 		<module>boot-elasticsearch-java-api</module>
         <module>boot-lsm-starter</module>
-        <module>boot-spring-data-jpa</module>
+        <module>boot-jpa-data</module>
+        <module>boot-mongodb-data</module>
         <!--
         
-        <module>boot-spring-data-jpa</module>-->
+        <module>boot-mongodb-data</module>-->
 		
     </modules>
 
