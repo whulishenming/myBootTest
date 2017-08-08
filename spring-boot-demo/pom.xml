@@ -24,9 +24,10 @@
         <module>boot-lsm-starter</module>
         <module>boot-jpa-data</module>
         <module>boot-mongodb-data</module>
+        <module>boot-shiro</module>
         <!--
         
-        <module>boot-mongodb-data</module>-->
+        <module>boot-shiro</module>-->
 		
     </modules>
 

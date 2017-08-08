@@ -1,0 +1,11 @@
+datasource:
+  password: lishenming
+  username: lishenming
+  driverClassName: com.mysql.jdbc.Driver
+  jpa:
+    url: "jdbc:mysql://192.168.31.80:3306/shiro?characterEncoding=UTF-8&useSSL=false"
+logging:
+  config: "classpath:log4j2_dev.xml"
+server:
+  session:
+    timeout: 30
