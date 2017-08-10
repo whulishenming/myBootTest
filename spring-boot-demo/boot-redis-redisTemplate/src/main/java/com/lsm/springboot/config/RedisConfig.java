@@ -1,17 +1,16 @@
 package com.lsm.springboot.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import redis.clients.jedis.JedisPoolConfig;
 
-/**
- * Created by za-lishenming on 2017/6/2.
- */
 @Configuration
 @Slf4j
 public class RedisConfig {
@@ -48,9 +47,18 @@ public class RedisConfig {
         return factory;
     }
 
-    @Bean
-    public RedisTemplate<?, ?> getRedisTemplate(JedisConnectionFactory jedisConnectionFactory){
+    @Bean(name = "redisTemplate")
+    public RedisTemplate<String, String> getRedisTemplate(JedisConnectionFactory jedisConnectionFactory){
 
         return new StringRedisTemplate(jedisConnectionFactory);
+    }
+
+    /**
+     * 对有序集合的操作
+     */
+    @Bean(name = "opsForZSet")
+    public ZSetOperations<String, String> opsForZSet(@Qualifier("redisTemplate") RedisTemplate<String, String> redisTemplate) {
+
+        return redisTemplate.opsForZSet();
     }
 }

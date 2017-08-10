@@ -25,9 +25,10 @@
         <module>boot-jpa-data</module>
         <module>boot-mongodb-data</module>
         <module>boot-shiro</module>
+        <module>boot-thymeleaf</module>
         <!--
         
-        <module>boot-shiro</module>-->
+        <module>boot-thymeleaf</module>-->
 		
     </modules>
 

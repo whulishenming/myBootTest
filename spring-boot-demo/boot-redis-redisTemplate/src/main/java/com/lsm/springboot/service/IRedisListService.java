@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * Created by za-lishenming on 2017/6/2.
  * 对列表的操作
+ * 列表是链表实现的，靠近两边的数据读取极快，而元素过多后获取中间元素的速度则会很慢
  * lPush, rPush, lPop, rPop, lLen, lRange
  * http://irfen.me/redis-learn-5-simple-command-list/
  */
