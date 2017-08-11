@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.*;
 import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
@@ -55,9 +52,15 @@ public class RedisConfig {
     }
 
     /**
-     * 对列表的操作
-     * @param redisTemplate
-     * @return
+     * 对字符串(String)的操作
+     */
+    @Bean(name = "opsForValue")
+    public ValueOperations<String, String> opsForValue(@Qualifier("redisTemplate") RedisTemplate<String, String> redisTemplate) {
+        return redisTemplate.opsForValue();
+    }
+
+    /**
+     * 对列表(list)的操作
      */
     @Bean(name = "opsForList")
     public ListOperations<String, String> opsForList(@Qualifier("redisTemplate") RedisTemplate<String, String> redisTemplate) {
@@ -65,7 +68,7 @@ public class RedisConfig {
     }
 
     /**
-     * 对有序集合的操作
+     * 对有序集合(zset)的操作
      */
     @Bean(name = "opsForZSet")
     public ZSetOperations<String, String> opsForZSet(@Qualifier("redisTemplate") RedisTemplate<String, String> redisTemplate) {

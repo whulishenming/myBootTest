@@ -25,7 +25,7 @@ public class IRedisZSetServiceTest extends BaseTest {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    private static final String key = "z_add_init";
+    private static final String key = "z_set_init";
 
     @Before
     public void flushDb() {
