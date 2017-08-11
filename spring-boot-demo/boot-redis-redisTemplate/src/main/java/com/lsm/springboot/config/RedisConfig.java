@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -54,6 +55,16 @@ public class RedisConfig {
     }
 
     /**
+     * 对列表的操作
+     * @param redisTemplate
+     * @return
+     */
+    @Bean(name = "opsForList")
+    public ListOperations<String, String> opsForList(@Qualifier("redisTemplate") RedisTemplate<String, String> redisTemplate) {
+        return redisTemplate.opsForList();
+    }
+
+    /**
      * 对有序集合的操作
      */
     @Bean(name = "opsForZSet")
@@ -61,4 +72,6 @@ public class RedisConfig {
 
         return redisTemplate.opsForZSet();
     }
+
+
 }

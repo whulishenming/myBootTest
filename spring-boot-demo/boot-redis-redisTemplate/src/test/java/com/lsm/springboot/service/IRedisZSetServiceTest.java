@@ -8,16 +8,14 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisZSetCommands;
 import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.data.redis.serializer.RedisSerializer;
 
-import java.util.*;
-
-import static org.junit.Assert.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 public class IRedisZSetServiceTest extends BaseTest {
@@ -95,7 +93,7 @@ public class IRedisZSetServiceTest extends BaseTest {
 
     @Test
     public void zIncrby() throws Exception {
-        Double njScore = redisZSetServiceImpl.zIncrby(key, "nanjing", 2.1);
+        Double njScore = redisZSetServiceImpl.zIncrby(key, "test", 2.1);
         Double ncScore = redisZSetServiceImpl.zIncrby(key, "nanchang", -2.1);
         log.info("nanjing score: {}, nanchang score: {}", njScore, ncScore);
     }
@@ -189,64 +187,87 @@ public class IRedisZSetServiceTest extends BaseTest {
     }
 
     @Test
-    public void zRangeByLex() throws Exception {
-        Set<String> rangeByLex = redisZSetServiceImpl.zRangeByLex(key, new RedisZSetCommands.Range(), new RedisZSetCommands.Limit());
-    }
-
-    @Test
     public void zRangeByScore() throws Exception {
+        Set<String> rangeByScore = redisZSetServiceImpl.zRangeByScore(key, 82, 90);
+        log.info("rangeByScore: {}", JSONObject.toJSON(rangeByScore));
     }
 
     @Test
     public void zRevRangeByScore() throws Exception {
+        Set<String> rangeByScore = redisZSetServiceImpl.zRevRangeByScore(key, 82, 90);
+        log.info("rangeByScore: {}", JSONObject.toJSON(rangeByScore));
     }
 
     @Test
     public void zRangeByScore1() throws Exception {
+        Set<String> rangeByScore = redisZSetServiceImpl.zRangeByScore(key, 82, 90, 1, 2);
+        log.info("rangeByScore: {}", JSONObject.toJSON(rangeByScore));
     }
 
     @Test
     public void zRevRangeByScore1() throws Exception {
+        Set<String> rangeByScore = redisZSetServiceImpl.zRevRangeByScore(key, 82, 90, 1, 2);
+        log.info("rangeByScore: {}", JSONObject.toJSON(rangeByScore));
     }
 
     @Test
     public void zRangeByScoreWithScores() throws Exception {
+        Set<ZSetOperations.TypedTuple<String>> tuples = redisZSetServiceImpl.zRangeByScoreWithScores(key, 82, 90);
+        log.info("tuples: {}", JSONObject.toJSON(tuples));
     }
 
     @Test
     public void zRevRangeByScoreWithScores() throws Exception {
+        Set<ZSetOperations.TypedTuple<String>> tuples = redisZSetServiceImpl.zRevRangeByScoreWithScores(key, 82, 90);
+        log.info("tuples: {}", JSONObject.toJSON(tuples));
     }
 
     @Test
     public void zRangeByScoreWithScores1() throws Exception {
+        Set<ZSetOperations.TypedTuple<String>> tuples = redisZSetServiceImpl.zRangeByScoreWithScores(key, 82, 90, 2, 2);
+        log.info("tuples: {}", JSONObject.toJSON(tuples));
     }
 
     @Test
     public void zRevRangeByScoreWithScores1() throws Exception {
+        Set<ZSetOperations.TypedTuple<String>> tuples = redisZSetServiceImpl.zRevRangeByScoreWithScores(key, 82, 90, 2, 2);
+        log.info("tuples: {}", JSONObject.toJSON(tuples));
     }
 
     @Test
     public void zRank() throws Exception {
+        Long rank = redisZSetServiceImpl.zRank(key, "nanjing");
+        log.info("rank: {}", JSONObject.toJSON(rank));
     }
 
     @Test
     public void zRevRank() throws Exception {
+        Long revRank = redisZSetServiceImpl.zRevRank(key, "nanjing");
+        log.info("revRank: {}", JSONObject.toJSON(revRank));
     }
 
     @Test
     public void zRem() throws Exception {
+        Long rem = redisZSetServiceImpl.zRem(key, "nanjing", "nanchang", "test");
+        log.info("rem: {}", JSONObject.toJSON(rem));
     }
 
     @Test
     public void zRemRangeByRank() throws Exception {
+        Long rangeByRank = redisZSetServiceImpl.zRemRangeByRank(key, 2, 5);
+        log.info("rangeByRank: {}", JSONObject.toJSON(rangeByRank));
     }
 
     @Test
     public void zRemRangeByScore() throws Exception {
+        Long remRangeByScore = redisZSetServiceImpl.zRemRangeByScore(key, 82, 90);
+        log.info("remRangeByScore: {}", JSONObject.toJSON(remRangeByScore));
     }
 
     @Test
     public void zScore() throws Exception {
+        Double score = redisZSetServiceImpl.zScore(key, "nanjing");
+        log.info("score: {}", JSONObject.toJSON(score));
     }
 
 }

@@ -1,120 +1,96 @@
 package com.lsm.springboot.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.lsm.springboot.service.IRedisListService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by za-lishenming on 2017/6/2.
- */
 @Service
-@Slf4j
 public class RedisListServiceImpl implements IRedisListService {
 
     @Autowired
-    private RedisTemplate<String, ?> redisTemplate;
+    private ListOperations<String, String> opsForList;
 
     @Override
-    public long lPush(final String key, Object obj) {
-        final String value = JSONObject.toJSONString(obj);
-        return redisTemplate.execute(new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                long count = connection.lPush(serializer.serialize(key), serializer.serialize(value));
-                return count;
-            }
-        });
+    public long lPush(final String key, final String... value) {
+        return opsForList.leftPushAll(key, value);
     }
 
     @Override
-    public long rPush(final String key, Object obj) {
-        final String value = JSONObject.toJSONString(obj);
-        return redisTemplate.execute(new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                long count = connection.rPush(serializer.serialize(key), serializer.serialize(value));
-                return count;
-            }
-        });
+    public long lPushX(final String key, final String value) {
+        return opsForList.leftPushIfPresent(key, value);
+    }
+
+    @Override
+    public long rPush(final String key, final String... value) {
+        return opsForList.rightPushAll(key, value);
     }
 
     @Override
     public String lPop(final String key) {
-        return redisTemplate.execute(new RedisCallback<String>() {
-            @Override
-            public String doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                byte[] res =  connection.lPop(serializer.serialize(key));
-                return serializer.deserialize(res);
-            }
-        });
+        return opsForList.leftPop(key);
+    }
+
+    @Override
+    public String bLPop(final String key, final long timeout, final TimeUnit unit) {
+        return opsForList.leftPop(key, timeout, unit);
     }
 
     @Override
     public String rPop(final String key) {
-        return redisTemplate.execute(new RedisCallback<String>() {
-            @Override
-            public String doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                byte[] res =  connection.rPop(serializer.serialize(key));
-                return serializer.deserialize(res);
-            }
-        });
+        return opsForList.rightPop(key);
+    }
+
+    @Override
+    public String bRPop(final String key, final long timeout, final TimeUnit unit) {
+        return opsForList.rightPop(key, timeout, unit);
+    }
+
+    @Override
+    public void lSet(final String key, final long index, final String value) {
+        opsForList.set(key, index, value);
+    }
+
+    @Override
+    public Long lInsert(final String key, final String pivot, final String value) {
+        return opsForList.leftPush(key, pivot, value);
+    }
+
+    @Override
+    public Long lRem(final String key, final long count, final String value) {
+        return opsForList.remove(key, count, value);
+    }
+
+    @Override
+    public void lTrim(final String key, final long start, final long end) {
+        opsForList.trim(key, start, end);
     }
 
     @Override
     public Long lLen(final String key) {
-        return redisTemplate.execute( new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                return connection.lLen(serializer.serialize(key));
-            }
-        });
+        return opsForList.size(key);
+    }
+
+    @Override
+    public String lIndex(final String key, final long index) {
+        return opsForList.index(key, index);
     }
 
     @Override
     public List<String> lRange (final String key, final long start, final long end) {
-        return redisTemplate.execute( new RedisCallback<List<String>>() {
-            @Override
-            public List<String> doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                List<byte[]> resultBytes = connection.lRange(serializer.serialize(key), start, end);
-                if (CollectionUtils.isEmpty(resultBytes)) {
-                    return new ArrayList<>();
-                }
-                List<String> resultList = new ArrayList<>();
-                for (byte[] result : resultBytes) {
-                    resultList.add(serializer.deserialize(result));
-                }
-                return resultList;
-            }
-        });
+        return opsForList.range(key, start, end);
     }
 
     @Override
     public String rPopLPush(final String sourceKey, final String destKye) {
-        return redisTemplate.execute( new RedisCallback<String>() {
-            @Override
-            public String doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                byte[] resultBytes = connection.rPopLPush(serializer.serialize(sourceKey), serializer.serialize(destKye));
-                return serializer.deserialize(resultBytes);
-            }
-        });
+        return opsForList.rightPopAndLeftPush(sourceKey, destKye);
+    }
+
+    @Override
+    public String bRPopLPush(final String sourceKey, final String destKye, final long timeout, final TimeUnit unit) {
+        return opsForList.rightPopAndLeftPush(sourceKey, destKye, timeout, unit);
     }
 }

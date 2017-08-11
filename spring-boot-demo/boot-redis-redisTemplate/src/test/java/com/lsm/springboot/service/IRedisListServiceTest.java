@@ -2,74 +2,146 @@ package com.lsm.springboot.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lsm.springboot.BaseTest;
-import com.lsm.springboot.domain.Employee;
-import com.lsm.springboot.service.IRedisListService;
-import com.lsm.springboot.service.IRedisStringService;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
 
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-/**
- * Created by za-lishenming on 2017/6/2.
- */
+@Slf4j
 public class IRedisListServiceTest extends BaseTest {
 
     @Autowired
     private IRedisListService redisListServiceImpl;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
+    private static final String key = "list_init";
+
+    @Before
+    public void flushDb() {
+        redisTemplate.execute(new RedisCallback<String>() {
+            @Override
+            public String doInRedis(RedisConnection connection) throws DataAccessException {
+                connection.flushDb();
+                return "ok";
+            }
+        });
+        redisListServiceImpl.lPush(key, "init 1", "init 3", "init 2", "init 3", "init 4", "init 5", "init 6", "init 3", "init 5", "init 1");
+    }
 
     @Test
     public void testLPush() {
-        redisListServiceImpl.lPush("employee_lPush", new Employee(3000L, 18621949197L, "lsm12", new Date()));
-        redisListServiceImpl.lPush("employee_lPush", new Employee(3001L, 18621949198L, "lsm13", new Date()));
+        long length = redisListServiceImpl.lPush(key, "test 1", "test 2");
+        log.info("length: {}", length);
+    }
+
+    @Test
+    public void lPushX() {
+        long length1 = redisListServiceImpl.lPushX(key, "test 1");
+        long length2 = redisListServiceImpl.lPushX("test_key", "test 1");
+        log.info("length1: {}, length2: {}", length1, length2);
     }
 
     @Test
     public void testRPush() {
 
-//        redisServiceImpl.rPush("employee_lPush", new Employee(4001L, 48621949198L, "lsm43", new Date()));
-        System.out.println("start" + System.currentTimeMillis());
-        for (int i = 0; i < 1000000; i++) {
-            redisListServiceImpl.rPush("employee_lPush_batch", new Employee((long) i, i + 100L, "test" + i, new Date()));
-        }
-        System.out.println("end" + System.currentTimeMillis());
+        long length = redisListServiceImpl.rPush(key, "test 1", "test 2");
+        log.info("length: {}", length);
     }
 
     @Test
     public void testLPop() {
-        String lPush = redisListServiceImpl.lPop("employee_lPush");
-        Employee employee = JSONObject.parseObject(lPush, Employee.class);
-        System.out.println(employee);
+        String lPop = redisListServiceImpl.lPop(key);
+        log.info("lPop: {}", lPop);
+    }
+
+    @Test
+    public void bLPop() {
+        String bLPop = redisListServiceImpl.bLPop("fdsfsdfds", 100, TimeUnit.SECONDS);
+        log.info("bLPop: {}", bLPop);
     }
 
     @Test
     public void testRPop() {
-        String lPush = redisListServiceImpl.rPop("employee_lPush");
-        Employee employee = JSONObject.parseObject(lPush, Employee.class);
-        System.out.println(employee);
+        String rPop = redisListServiceImpl.rPop(key);
+        log.info("rPop: {}", rPop);
+    }
+
+    @Test
+    public void bRPop() {
+        String bRPop = redisListServiceImpl.bRPop("fdsfsdfds", 10, TimeUnit.SECONDS);
+        log.info("bRPop: {}", bRPop);
+    }
+
+    @Test
+    public void lSet() {
+        redisListServiceImpl.lSet(key, 2, "index_name");
+    }
+
+    @Test
+    public void lInsert() {
+        Long length = redisListServiceImpl.lInsert(key, "init 3", "insert_name");
+        log.info("length: {}", length);
+    }
+
+    @Test
+    public void lRem1() {
+        Long length = redisListServiceImpl.lRem(key, 2, "init 3");
+        log.info("length: {}", length);
+    }
+
+    @Test
+    public void lRem2() {
+        Long length = redisListServiceImpl.lRem(key, -2, "init 3");
+        log.info("length: {}", length);
+    }
+
+    @Test
+    public void lRem3() {
+        Long length = redisListServiceImpl.lRem(key, 0, "init 3");
+        log.info("length: {}", length);
+    }
+
+    @Test
+    public void lTrim() {
+        redisListServiceImpl.lTrim(key, 2, 4);
     }
 
     @Test
     public void testLLen() {
-        Long length = redisListServiceImpl.lLen("employee_lPush_batch");
-        System.out.println(length);
+        Long length = redisListServiceImpl.lLen(key);
+        log.info("length: {}", length);
+    }
+
+    @Test
+    public void lIndex() {
+        String value = redisListServiceImpl.lIndex(key, 2);
+        log.info("value: {}", value);
     }
 
     @Test
     public void testLRange() {
-       /* redisServiceImpl.rPush("employee_lPush", new Employee(5000L, 48621949197L, "lsm42", new Date()));
-        redisServiceImpl.rPush("employee_lPush", new Employee(5001L, 48621949198L, "lsm43", new Date()));
-        redisServiceImpl.lPush("employee_lPush", new Employee(6000L, 18621949197L, "lsm12", new Date()));
-        redisServiceImpl.lPush("employee_lPush", new Employee(6001L, 18621949198L, "lsm13", new Date()));*/
-        long start = System.currentTimeMillis();
-        System.out.println("start:" + start);
-        List<String> stringList = redisListServiceImpl.lRange("employee_lPush_batch", 1000, 2000);
-        System.out.println(stringList );
-        long end = System.currentTimeMillis();
-        System.out.println("end:" + end);
-        System.out.println("total:" + (end - start));
+        List<String> list = redisListServiceImpl.lRange(key, 2, 4);
+        log.info("length: {}", JSONObject.toJSONString(list));
+    }
+
+    @Test
+    public void rPopLPush() {
+        String value = redisListServiceImpl.rPopLPush(key, "test");
+        log.info("value: {}", value);
+    }
+
+    @Test
+    public void bRPopLPush() {
+        String value = redisListServiceImpl.bRPopLPush("test", key, 10, TimeUnit.SECONDS);
+        log.info("value: {}", value);
     }
 
 }

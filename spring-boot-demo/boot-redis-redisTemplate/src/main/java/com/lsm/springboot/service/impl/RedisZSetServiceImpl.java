@@ -62,12 +62,6 @@ public class RedisZSetServiceImpl implements IRedisZSetService {
     }
 
     @Override
-    public Set<String> zRangeByLex(final String key, final RedisZSetCommands.Range range, final RedisZSetCommands.Limit limit){
-
-        return opsForZSet.rangeByLex(key, range, limit);
-    }
-
-    @Override
     public Set<String> zRangeByScore(final String key, final double min, final double max){
         return opsForZSet.rangeByScore(key, min, max);
     }

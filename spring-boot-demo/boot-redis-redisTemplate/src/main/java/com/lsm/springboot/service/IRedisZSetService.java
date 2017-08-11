@@ -1,6 +1,5 @@
 package com.lsm.springboot.service;
 
-import org.springframework.data.redis.connection.RedisZSetCommands;
 import org.springframework.data.redis.core.ZSetOperations;
 
 import java.util.List;
@@ -82,11 +81,6 @@ public interface IRedisZSetService {
     Set<ZSetOperations.TypedTuple<String>> zRevRangeWithScores(String key, long start, long end);
 
     /**
-     * 通过字典区间返回有序集合的成员
-     */
-    Set<String> zRangeByLex (String key, RedisZSetCommands.Range range, RedisZSetCommands.Limit limit);
-
-    /**
      * 返回有序集合中指定分数区间的成员列表。有序集成员按分数值递增(从小到大)次序排列
      *  1. 区间的取值使用闭区间
      */
@@ -94,6 +88,10 @@ public interface IRedisZSetService {
 
     Set<String> zRevRangeByScore(String key, double min, double max);
 
+    /**
+     * offset 表示从第 offset 个开始，查找 count 个
+     *  1. offset从0开始
+     */
     Set<String> zRangeByScore(String key, double min, double max, long offset, long count);
 
     Set<String> zRevRangeByScore(String key, double min, double max, long offset, long count);
@@ -108,7 +106,7 @@ public interface IRedisZSetService {
 
     /**
      * 返回有序集中指定成员的排名,其中有序集成员按分数值递增(从小到大)顺序排列
-     *  1. 1表示第二名
+     *  1. 排名以 0 为底
      */
     Long zRank(String key, String member);
 
