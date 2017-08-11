@@ -85,13 +85,4 @@ public class RedisStringServiceImpl implements IRedisStringService {
         return opsForValue.size(key);
     }
 
-    @Override
-    public Boolean setBit(final String key, final long offset, final boolean value) {
-        return opsForValue.setBit(key, offset, value);
-    }
-
-    @Override
-    public Boolean getBit(final String key, final long offset) {
-        return opsForValue.getBit(key, offset);
-    }
 }

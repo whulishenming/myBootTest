@@ -86,13 +86,4 @@ public interface IRedisStringService {
      */
     Long strLen(String key);
 
-    /**
-     * 于对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)
-     */
-    Boolean setBit(String key, long offset, boolean value);
-
-    /**
-     * 对 key 所储存的字符串值，获取指定偏移量上的位(bit)
-     */
-    Boolean getBit(String key, long offset);
 }
