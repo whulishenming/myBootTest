@@ -59,6 +59,11 @@ public class RedisConfig {
         return redisTemplate.opsForValue();
     }
 
+    @Bean(name = "opsForHash")
+    public HashOperations<String, String, String> opsForHash(@Qualifier("redisTemplate") RedisTemplate<String, String> redisTemplate) {
+        return redisTemplate.opsForHash();
+    }
+
     /**
      * 对列表(list)的操作
      */
