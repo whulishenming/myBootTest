@@ -6,199 +6,97 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
 
+import javax.print.DocFlavor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by shenming.li on 2017/6/28.
- */
 @Service
 public class RedisSetServiceImpl implements IRedisSetService{
+
     @Autowired
-    private RedisTemplate<String, ?> redisTemplate;
+    private SetOperations<String, String> opsForSet;
 
     @Override
     public Long sAdd(final String key, final String... values) {
-        return redisTemplate.execute(new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                int length = values.length;
-                byte[][] bytes = new byte[length][];
-                for (int i = 0; i < length; i++) {
-                    bytes[i] = serializer.serialize(values[i]);
-                }
-                return connection.sAdd(serializer.serialize(key), bytes);
-            }
-        });
+        return opsForSet.add(key, values);
     }
 
     @Override
     public Long sRem(final String key, final String... values) {
-        return redisTemplate.execute(new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                int length = values.length;
-                byte[][] bytes = new byte[length][];
-                for (int i = 0; i < length; i++) {
-                    bytes[i] = serializer.serialize(values[i]);
-                }
-                return connection.sRem(serializer.serialize(key), bytes);
-            }
-        });
+        return opsForSet.remove(key, values);
     }
 
     @Override
-    public Boolean sIsMember(final String key, final String value) {
-        return redisTemplate.execute(new RedisCallback<Boolean>() {
-            @Override
-            public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                return connection.sIsMember(serializer.serialize(key), serializer.serialize(value));
-            }
-        });
+    public String sPop(final String key) {
+        return opsForSet.pop(key);
     }
 
     @Override
-    public Long sCard(final String key) {
-        return redisTemplate.execute(new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                return connection.sCard(serializer.serialize(key));
-            }
-        });
+    public List<String> sRandMember(final String key, final long count){
+        return opsForSet.randomMembers(key, count);
     }
 
     @Override
-    public List<String> sMembers(final String key) {
-        return redisTemplate.execute(new RedisCallback<List<String>>() {
-            @Override
-            public List<String> doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                Set<byte[]> bytesSet = connection.sMembers(serializer.serialize(key));
-                List<String> resultList = new ArrayList<>();
-                for (byte[] bytes : bytesSet) {
-                    resultList.add(serializer.deserialize(bytes));
-                }
-                return resultList;
-            }
-        });
+    public Set<String> sRandMember(final long count, final String key){
+        return opsForSet.distinctRandomMembers(key, count);
     }
 
     @Override
-    public List<String> sDiff(final String... keys) {
-        return redisTemplate.execute(new RedisCallback<List<String>>() {
-            @Override
-            public List<String> doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                int length = keys.length;
-                byte[][] bytes = new byte[length][];
-                for (int i = 0; i < length; i++) {
-                    bytes[i] = serializer.serialize(keys[i]);
-                }
-                Set<byte[]> bytesSet = connection.sDiff(bytes);
-                List<String> resultList = new ArrayList<>();
-                for (byte[] bytes1 : bytesSet) {
-                    resultList.add(serializer.deserialize(bytes1));
-                }
-                return resultList;
-            }
-        });
+    public Boolean sMove(final String sourceKey, final String member, final String destKey){
+        return opsForSet.move(sourceKey, member, destKey);
     }
 
     @Override
-    public Long sDiffStore(final String destKey, final String... keys) {
-        return redisTemplate.execute(new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                int length = keys.length;
-                byte[][] bytes = new byte[length][];
-                for (int i = 0; i < length; i++) {
-                    bytes[i] = serializer.serialize(keys[i]);
-                }
-                return connection.sDiffStore(serializer.serialize(destKey), bytes);
-            }
-        });
+    public Long sCard(final String key){
+        return opsForSet.size(key);
     }
 
     @Override
-    public List<String> sInter(final String... keys) {
-        return redisTemplate.execute(new RedisCallback<List<String>>() {
-            @Override
-            public List<String> doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                int length = keys.length;
-                byte[][] bytes = new byte[length][];
-                for (int i = 0; i < length; i++) {
-                    bytes[i] = serializer.serialize(keys[i]);
-                }
-                Set<byte[]> bytesSet = connection.sInter(bytes);
-                List<String> resultList = new ArrayList<>();
-                for (byte[] bytes1 : bytesSet) {
-                    resultList.add(serializer.deserialize(bytes1));
-                }
-                return resultList;
-            }
-        });
+    public Boolean sIsMember(final String key, final String member) {
+        return opsForSet.isMember(key, member);
     }
 
     @Override
-    public Long sInterStore(final String destKey, final String... keys) {
-        return redisTemplate.execute(new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                int length = keys.length;
-                byte[][] bytes = new byte[length][];
-                for (int i = 0; i < length; i++) {
-                    bytes[i] = serializer.serialize(keys[i]);
-                }
-                return connection.sInterStore(serializer.serialize(destKey), bytes);
-            }
-        });
+    public Set<String> sInter(final String key, final List<String> otherKeys){
+        return opsForSet.intersect(key, otherKeys);
     }
 
     @Override
-    public List<String> sUnion(final String... keys) {
-        return redisTemplate.execute(new RedisCallback<List<String>>() {
-            @Override
-            public List<String> doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                int length = keys.length;
-                byte[][] bytes = new byte[length][];
-                for (int i = 0; i < length; i++) {
-                    bytes[i] = serializer.serialize(keys[i]);
-                }
-                Set<byte[]> bytesSet = connection.sUnion(bytes);
-                List<String> resultList = new ArrayList<>();
-                for (byte[] bytes1 : bytesSet) {
-                    resultList.add(serializer.deserialize(bytes1));
-                }
-                return resultList;
-            }
-        });
+    public Long sInterStore(final String key, final List<String> otherKeys, final String destKey){
+        return opsForSet.intersectAndStore(key, otherKeys, destKey);
     }
 
     @Override
-    public Long sUnionStore(final String destKey, final String... keys) {
-        return redisTemplate.execute(new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                int length = keys.length;
-                byte[][] bytes = new byte[length][];
-                for (int i = 0; i < length; i++) {
-                    bytes[i] = serializer.serialize(keys[i]);
-                }
-                return connection.sUnionStore(serializer.serialize(destKey), bytes);
-            }
-        });
+    public Set<String> sUnion(final String key, final List<String> otherKeys){
+        return opsForSet.union(key, otherKeys);
     }
+
+    @Override
+    public Long sUnionStore(final String key, final List<String> otherKeys, final String destKey){
+        return opsForSet.unionAndStore(key, otherKeys, destKey);
+    }
+
+    @Override
+    public Set<String> sDiff(final String key, final List<String> otherKeys){
+        return opsForSet.difference(key, otherKeys);
+    }
+
+    @Override
+    public Long sDiffStore(final String key, final List<String> otherKeys, final String destKey){
+        return opsForSet.differenceAndStore(key, otherKeys, destKey);
+    }
+
+    @Override
+    public Set<String> sMembers(final String key){
+        return opsForSet.members(key);
+    }
+
+
+
 }

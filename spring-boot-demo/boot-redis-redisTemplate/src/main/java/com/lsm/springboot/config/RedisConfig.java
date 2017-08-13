@@ -59,6 +59,9 @@ public class RedisConfig {
         return redisTemplate.opsForValue();
     }
 
+    /**
+     * 对哈希(Hash)的操作
+     */
     @Bean(name = "opsForHash")
     public HashOperations<String, String, String> opsForHash(@Qualifier("redisTemplate") RedisTemplate<String, String> redisTemplate) {
         return redisTemplate.opsForHash();
@@ -70,6 +73,14 @@ public class RedisConfig {
     @Bean(name = "opsForList")
     public ListOperations<String, String> opsForList(@Qualifier("redisTemplate") RedisTemplate<String, String> redisTemplate) {
         return redisTemplate.opsForList();
+    }
+
+    /**
+     * 对集合(Set)的操作
+     */
+    @Bean(name = "opsForSet")
+    public SetOperations<String, String> opsForSet(@Qualifier("redisTemplate") RedisTemplate<String, String> redisTemplate) {
+        return redisTemplate.opsForSet();
     }
 
     /**

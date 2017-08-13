@@ -1,93 +1,87 @@
 package com.lsm.springboot.service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
- * Created by shenming.li on 2017/6/28.
  * 对集合的操作
  * 集合里的元素是不可重复的
  */
 public interface IRedisSetService {
+
     /**
-     * 将一个或多个元素添加到集合里面，并返回添加成功的元素数量
-     * @param key
-     * @param values
-     * @return
+     * 向集合添加一个或多个成员
      */
     Long sAdd(String key, String... values);
 
     /**
-     * 从集合里面移除一个或多个元素，并返回被移出元素的数量
-     * @param key
-     * @param values
-     * @return
+     * 移除集合中一个或多个成员
      */
     Long sRem(String key, String... values);
 
     /**
-     * 检查集合里面是否存在元素
-     * @param key
-     * @param value
-     * @return
+     * 移除并返回集合中的一个随机元素
      */
-    Boolean sIsMember(String key, String value);
+    String sPop(String key);
 
     /**
-     * 返回集合中元素的数量
-     * @param key
-     * @return
+     * 返回集合中一个或多个随机数, 可能重复
+     */
+    List<String> sRandMember(String key, long count);
+
+    /**
+     * 返回集合中一个或多个随机数，不重复
+     */
+    Set<String> sRandMember(long count, String key);
+
+    /**
+     * 将 member 元素从 sourceKey 集合移动到 destKey 集合
+     */
+    Boolean sMove(String sourceKey, String member, String destKey);
+
+    /**
+     * 获取集合的成员数
      */
     Long sCard(String key);
 
     /**
-     * 返回集合中的所有元素
-     * @param key
-     * @return
+     * 判断 member 元素是否是集合 key 的成员
      */
-    List<String> sMembers(String key);
+    Boolean sIsMember(String key, String member);
 
     /**
-     * 返回存在第一个集合但是不存在其他集合中的元素---差集运算
-     * @param keys
-     * @return
+     * 返回给定所有集合的交集
      */
-    List<String> sDiff(String... keys);
+    Set<String> sInter(String key, List<String> otherKeys);
 
     /**
-     * 返回存在第一个集合但是不存在其他集合中的元素并存储到 destKey 里面---差集运算
-     * @param destKey
-     * @param keys
-     * @return
+     * 返回给定所有集合的交集并存储在 destKey 中
      */
-    Long sDiffStore(String destKey, String... keys);
+    Long sInterStore(String key, List<String> otherKeys, String destKey);
 
     /**
-     * 返回同时存在于所有集合的元素-----交集运算
-     * @param keys
-     * @return
+     * 返回所有给定集合的并集
      */
-    List<String> sInter(String... keys);
+    Set<String> sUnion(String key, List<String> otherKeys);
 
     /**
-     * 返回同时存在于所有集合的元素并存储到 destKey 里面-----交集运算
-     * @param destKey
-     * @param keys
-     * @return
+     * 所有给定集合的并集存储在 destKey 集合中
      */
-    Long sInterStore(String destKey, String... keys);
+    Long sUnionStore(String key, List<String> otherKeys, String destKey);
 
     /**
-     * 返回至少存在于一个集合的元素-----并集运算
-     * @param keys
-     * @return
+     * 返回给定所有集合的差集
      */
-    List<String> sUnion(String... keys);
+    Set<String> sDiff(String key, List<String> otherKeys);
 
     /**
-     * 返回至少存在于一个集合的元素并存储到 destKey 里面-----并集运算
-     * @param destKey
-     * @param keys
-     * @return
+     * 返回给定所有集合的差集并存储在 destKey 中
      */
-    Long sUnionStore(String destKey, String... keys);
+    Long sDiffStore(String key, List<String> otherKeys, String destKey);
+
+    /**
+     * 返回集合中的所有成员
+     */
+    Set<String> sMembers(String key);
+
 }

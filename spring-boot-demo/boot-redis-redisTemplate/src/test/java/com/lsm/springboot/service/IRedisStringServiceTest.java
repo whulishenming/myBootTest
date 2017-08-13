@@ -139,17 +139,4 @@ public class IRedisStringServiceTest extends BaseTest {
         log.info("length: {}", length);
     }
 
-    @Test
-    public void setBit() throws Exception {
-        // TODO
-        Boolean setBit1 = redisStringServiceImpl.setBit(key, 2, true);
-        Boolean setBit2 = redisStringServiceImpl.setBit("test_key", 2, true);
-
-        log.info("setBit1: {}, setBit2: {}", setBit1, setBit2);
-    }
-
-    @Test
-    public void getBit() throws Exception {
-    }
-
 }

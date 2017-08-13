@@ -1,113 +1,143 @@
 package com.lsm.springboot.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lsm.springboot.BaseTest;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
-/**
- * Created by shenming.li on 2017/6/28.
- */
+import static org.junit.Assert.*;
+
+@Slf4j
 public class IRedisSetServiceTest extends BaseTest {
     @Autowired
     private IRedisSetService redisSetServiceImpl;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
-    @Test
-    public void sAdd() {
-        Long sAdd = redisSetServiceImpl.sAdd("sAdd", "sAdd1", "sAdd2");
-        System.out.println(sAdd);
-        Long sAdd2 = redisSetServiceImpl.sAdd("sAdd", "sAdd3", "sAdd2");
-        System.out.println(sAdd2);
+    private static final String key = "set_init";
+
+    private static final String key2 = "set_init_2";
+
+    @Before
+    public void flushDb() {
+        redisTemplate.execute(new RedisCallback<String>() {
+            @Override
+            public String doInRedis(RedisConnection connection) throws DataAccessException {
+                connection.flushDb();
+                return "ok";
+            }
+        });
+        redisSetServiceImpl.sAdd(key, "value1", "value5", "value4", "value9", "value2", "value4");
+        redisSetServiceImpl.sAdd(key2, "value11", "value5", "value14", "value9", "value12", "value24");
     }
 
     @Test
-    public void sRem() {
-        Long sAdd = redisSetServiceImpl.sAdd("sRem", "sRem1", "sRem2");
-        System.out.println(sAdd);
-        Long sAdd2 = redisSetServiceImpl.sRem("sRem", "sRem3", "sRem2");
-        System.out.println(sAdd2);
+    public void sRem() throws Exception {
+        Long sRem = redisSetServiceImpl.sRem(key, "value5", "test");
+
+        log.info("sRem: {}", sRem);
     }
 
     @Test
-    public void sIsMember() throws Exception {
-        Boolean sIsMember = redisSetServiceImpl.sIsMember("sIsMember", "sIsMember");
-        System.out.println(sIsMember);
-        redisSetServiceImpl.sAdd("sIsMember", "sIsMember");
-        sIsMember = redisSetServiceImpl.sIsMember("sIsMember", "sIsMember");
-        System.out.println(sIsMember);
+    public void sPop() throws Exception {
+        String sPop = redisSetServiceImpl.sPop(key);
+
+        log.info("sPop: {}", sPop);
+    }
+
+    @Test
+    public void sRandMember() throws Exception {
+        List<String> sRandMember = redisSetServiceImpl.sRandMember(key, 2);
+
+        log.info("sRandMember: {}", JSONObject.toJSONString(sRandMember));
+    }
+
+    @Test
+    public void sRandMember2() {
+        Set<String> sRandMember = redisSetServiceImpl.sRandMember(2, key);
+
+        log.info("sRandMember: {}", JSONObject.toJSONString(sRandMember));
+    }
+
+    @Test
+    public void sMove() throws Exception {
+        Boolean sMove = redisSetServiceImpl.sMove(key, "value1", "test_key");
+
+        log.info("sMove: {}", sMove);
     }
 
     @Test
     public void sCard() throws Exception {
-        System.out.println(redisSetServiceImpl.sCard("sCard"));
-        redisSetServiceImpl.sAdd("sCard", "sCard1", "sCard");
-        System.out.println(redisSetServiceImpl.sCard("sCard"));
+        Long sCard = redisSetServiceImpl.sCard(key);
+
+        log.info("sCard: {}", sCard);
     }
 
     @Test
-    public void sMembers() throws Exception {
-        redisSetServiceImpl.sAdd("sMembers", "sMembers1", "sMembers2", "sMembers4", "sMembers3");
-        List<String> sMembers = redisSetServiceImpl.sMembers("sMembers");
-        System.out.println(sMembers);
-    }
+    public void sIsMember() throws Exception {
+        Boolean sIsMember1 = redisSetServiceImpl.sIsMember(key, "test");
+        Boolean sIsMember2 = redisSetServiceImpl.sIsMember(key, "value1");
 
-    @Test
-    public void sDiff() throws Exception {
-        redisSetServiceImpl.sAdd("sDiff_key", "sDiff1", "sDiff2", "sDif3");
-        redisSetServiceImpl.sAdd("sDiff2_key", "sDiff1", "sDiff21", "sDif31");
-        redisSetServiceImpl.sAdd("sDiff3_key", "sDiff2", "sDiff22", "sDif32");
-        List<String> resultList = redisSetServiceImpl.sDiff("sDiff_key", "sDiff2_key", "sDiff3_key");
-        System.out.println(resultList);
-    }
-
-    @Test
-    public void sDiffStore() throws Exception {
-        redisSetServiceImpl.sAdd("sDiffStore1_key", "sDiff1", "sDiff2", "sDif3");
-        redisSetServiceImpl.sAdd("sDiffStore2_key", "sDiff1", "sDiff21", "sDif31");
-        redisSetServiceImpl.sAdd("sDiffStore3_key", "sDiff2", "sDiff22", "sDif32");
-        redisSetServiceImpl.sDiffStore("sDiffStore_key", "sDiffStore1_key", "sDiffStore2_key", "sDiffStore3_key");
-        List<String> resultList = redisSetServiceImpl.sMembers("sDiffStore_key");
-        System.out.println(resultList);
+        log.info("sIsMember1: {}, sIsMember2: {}", sIsMember1, sIsMember2);
     }
 
     @Test
     public void sInter() throws Exception {
-        redisSetServiceImpl.sAdd("sInter1_key", "sDiff1", "sDiff2", "sDif3");
-        redisSetServiceImpl.sAdd("sInter2_key", "sDiff1", "sDiff21", "sDif31");
-        redisSetServiceImpl.sAdd("sInter3_key", "sDiff1", "sDiff22", "sDif32");
-        List<String> resultList = redisSetServiceImpl.sInter("sInter1_key", "sInter2_key", "sInter3_key");
-        System.out.println(resultList);
+        Set<String> sInter = redisSetServiceImpl.sInter(key, Arrays.asList(key2));
+
+        log.info("sInter: {}", JSONObject.toJSONString(sInter));
     }
 
     @Test
     public void sInterStore() throws Exception {
-        redisSetServiceImpl.sAdd("sInterStore1_key", "sDiff1", "sDiff2", "sDif3");
-        redisSetServiceImpl.sAdd("sInterStore2_key", "sDiff1", "sDiff21", "sDif31");
-        redisSetServiceImpl.sAdd("sInterStore3_key", "sDiff1", "sDiff22", "sDif32");
-        redisSetServiceImpl.sInterStore("sInterStore_key", "sInterStore1_key", "sInterStore2_key", "sInterStore3_key");
-        List<String> resultList = redisSetServiceImpl.sMembers("sInterStore_key");
-        System.out.println(resultList);
+        Long sInterStore = redisSetServiceImpl.sInterStore(key, Arrays.asList(key2), "test_key");
+
+        log.info("sInterStore: {}", sInterStore);
     }
 
     @Test
     public void sUnion() throws Exception {
-        redisSetServiceImpl.sAdd("sUnion1_key", "sDiff1", "sDiff2", "sDif3");
-        redisSetServiceImpl.sAdd("sUnion2_key", "sDiff1", "sDiff21", "sDif31");
-        redisSetServiceImpl.sAdd("sUnion3_key", "sDiff1", "sDiff22", "sDif32");
-        List<String> resultList = redisSetServiceImpl.sUnion("sUnion1_key", "sUnion2_key", "sUnion3_key");
-        System.out.println(resultList);
+        Set<String> sUnion = redisSetServiceImpl.sUnion(key, Arrays.asList(key2));
 
+        log.info("sUnion: {}", JSONObject.toJSONString(sUnion));
     }
 
     @Test
     public void sUnionStore() throws Exception {
-        redisSetServiceImpl.sAdd("sUnionStore1_key", "sDiff1", "sDiff2", "sDif3");
-        redisSetServiceImpl.sAdd("sUnionStore2_key", "sDiff1", "sDiff21", "sDif31");
-        redisSetServiceImpl.sAdd("sUnionStore3_key", "sDiff1", "sDiff22", "sDif32");
-        redisSetServiceImpl.sUnionStore("sUnionStore_key", "sUnionStore1_key", "sUnionStore2_key", "sUnionStore3_key");
-        List<String> resultList = redisSetServiceImpl.sMembers("sUnionStore_key");
-        System.out.println(resultList);
+        Long sUnionStore = redisSetServiceImpl.sUnionStore(key, Arrays.asList(key2), "test_key");
+
+        log.info("sUnionStore: {}", sUnionStore);
+    }
+
+    @Test
+    public void sDiff() throws Exception {
+        Set<String> sDiff = redisSetServiceImpl.sDiff(key, Arrays.asList(key2));
+
+        log.info("sDiff: {}", JSONObject.toJSONString(sDiff));
+    }
+
+    @Test
+    public void sDiffStore() throws Exception {
+        Long sDiffStore = redisSetServiceImpl.sDiffStore(key, Arrays.asList(key2), "test_key");
+
+        log.info("sDiffStore: {}", sDiffStore);
+    }
+
+    @Test
+    public void sMembers() throws Exception {
+        Set<String> sMembers = redisSetServiceImpl.sMembers(key);
+
+        log.info("sMembers: {}", JSONObject.toJSONString(sMembers));
     }
 
 }
