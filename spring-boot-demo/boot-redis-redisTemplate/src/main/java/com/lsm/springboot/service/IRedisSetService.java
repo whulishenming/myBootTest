@@ -6,6 +6,7 @@ import java.util.Set;
 /**
  * 对集合的操作
  * 集合里的元素是不可重复的
+ * set 的内部实现是一个 value永远为null的HashMap，实际就是通过计算hash的方式来快速排重的
  */
 public interface IRedisSetService {
 

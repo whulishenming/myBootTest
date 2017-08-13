@@ -5,8 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 对列表的操作
- * Redis列表是简单的字符串列表，按照插入顺序排序。你可以添加一个元素到列表的头部（左边）或者尾部（右边）
- * 列表是链表实现的，靠近两边的数据读取极快，而元素过多后获取中间元素的速度则会很慢
+ * Redis list的实现为一个双向链表，即可以支持反向查找和遍历
  */
 public interface IRedisListService {
 

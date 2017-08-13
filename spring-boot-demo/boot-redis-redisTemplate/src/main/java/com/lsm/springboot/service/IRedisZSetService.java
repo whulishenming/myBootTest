@@ -8,8 +8,11 @@ import java.util.Set;
 /**
  * 对有序集合的操作
  *  1. Redis中的有序集合类型，实际上是在集合类型上，为每个元素都关联一个分数，有序实际上说的是分数有序，我们根据分数的范围获取集合及其他操作
- *  2. 有序集合类型使用的散列表和跳跃表（Skip list）实现
+ *  2. Redis sorted set的内部使用HashMap和跳跃表(SkipList)来保证数据的存储和有序，
+ *     HashMap里放的是成员到score的映射，而跳跃表里存放的 是所有的成员，
+ *     排序依据是HashMap里存的score
  *  3. 有序集合可以（通过改变分数）调整元素的位置
+ *  http://www.cnblogs.com/WJ5888/p/4516782.html
  */
 public interface IRedisZSetService {
 

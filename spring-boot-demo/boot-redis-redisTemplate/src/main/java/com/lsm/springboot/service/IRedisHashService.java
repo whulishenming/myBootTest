@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 对Hash的操作
+ * 内部存储的Value为一个HashMap，并提供了直接存取这个Map成员的接口
+ */
 public interface IRedisHashService {
     /**
      * 将哈希表 key 中的字段 field 的值设为 value
