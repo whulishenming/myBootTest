@@ -54,7 +54,7 @@ public class DataSourceShardingConfig {
 
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl(String.format("jdbc:mysql://localhost:3306/%s", dataSourceName));
+        dataSource.setUrl(String.format("jdbc:mysql://192.168.31.80:3306/%s", dataSourceName));
         dataSource.setUsername(username);
         dataSource.setPassword(password);
         dataSource.setInitialSize(5);
@@ -87,7 +87,7 @@ public class DataSourceShardingConfig {
      */
     @Bean
     public DataSourceRule dataSourceRule(){
-        // 构建读写分离数据源
+       /* // 构建读写分离数据源
         DataSource masterDataSourceSharding0 = createDataSource("sharding_0");
         DataSource slaveDataSourceSharding0 = createDataSource("slave_sharding_0");
         DataSource masterSlaveds0 = MasterSlaveDataSourceFactory.createDataSource("ms_0", masterDataSourceSharding0, slaveDataSourceSharding0);
@@ -98,14 +98,14 @@ public class DataSourceShardingConfig {
         Map<String, DataSource> dataSourceMap = new HashMap<>(2);
         dataSourceMap.put("ms_0", masterSlaveds0);
         dataSourceMap.put("ms_1", masterSlaveds1);
-        return new DataSourceRule(dataSourceMap);
+        return new DataSourceRule(dataSourceMap);*/
        //分库分表demo
-      /*  //设置分库映射
+        //设置分库映射
         Map<String, DataSource> dataSourceMap = new HashMap<>(2);
         //添加两个数据库ds_0,ds_1到map里
         dataSourceMap.put("sharding_0", createDataSource("sharding_0"));
         dataSourceMap.put("sharding_1", createDataSource("sharding_1"));
-        return new DataSourceRule(dataSourceMap, "sharding_0");*/
+        return new DataSourceRule(dataSourceMap, "sharding_0");
     }
 
     /**

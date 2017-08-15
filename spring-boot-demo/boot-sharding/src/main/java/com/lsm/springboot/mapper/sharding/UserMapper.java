@@ -1,10 +1,12 @@
 package com.lsm.springboot.mapper.sharding;
 
+import com.lsm.springboot.domain.CountAge;
 import com.lsm.springboot.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by shenming.li on 2017/6/13.
@@ -19,4 +21,6 @@ public interface UserMapper {
     List<User> findByUserIds(List<Integer> userIds);
 
     User selectByUserId(@Param("userId") Integer userId);
+
+    List<CountAge> groupByAge();
 }

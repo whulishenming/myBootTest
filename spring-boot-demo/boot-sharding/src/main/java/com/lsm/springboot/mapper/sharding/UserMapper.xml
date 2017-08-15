@@ -36,4 +36,10 @@
 
     </select>
 
+    <select id="groupByAge" resultType="com.lsm.springboot.domain.CountAge">
+        select count(1) as num, age as age
+        from t_user
+        group by age
+    </select>
+
 </mapper>

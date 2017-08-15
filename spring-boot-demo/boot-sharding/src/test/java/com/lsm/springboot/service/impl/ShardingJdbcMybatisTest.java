@@ -2,16 +2,20 @@ package com.lsm.springboot.service.impl;
 
 import com.dangdang.ddframe.rdb.sharding.id.generator.IdGenerator;
 import com.lsm.springboot.BaseTest;
+import com.lsm.springboot.domain.CountAge;
 import com.lsm.springboot.domain.Student;
 import com.lsm.springboot.domain.User;
 import com.lsm.springboot.service.IStudentService;
 import com.lsm.springboot.service.IUserService;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by shenming.li on 2017/6/13.
@@ -29,12 +33,13 @@ public class ShardingJdbcMybatisTest extends BaseTest {
 
     @Test
     public void testUserInsert() {
-        for (int i = 10000; i < 10012; i++) {
+        Random random = new Random();
+        for (int i = 0; i < 10012; i++) {
             User u = new User();
             u.setId(idGenerator.generateId().longValue());
             u.setUserId(i);
-            u.setAge(20 + i);
-            u.setName("test" + i);
+            u.setAge(random.nextInt(70));
+            u.setName("test" + i % 101);
             Assert.assertEquals(userServiceImpl.insert(u), new Integer(1));
         }
     }
@@ -85,5 +90,11 @@ public class ShardingJdbcMybatisTest extends BaseTest {
     @Test(expected = IllegalAccessException.class)
     public void testTransactionTestFailure() throws IllegalAccessException{
         userServiceImpl.transactionTestFailure();
+    }
+
+    @Test
+    public void groupByAge() {
+        List<CountAge> list = userServiceImpl.groupByAge();
+        System.out.println(list);
     }
 }

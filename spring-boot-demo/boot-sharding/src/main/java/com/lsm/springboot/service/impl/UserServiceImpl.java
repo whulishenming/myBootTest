@@ -1,6 +1,7 @@
 package com.lsm.springboot.service.impl;
 
 import com.dangdang.ddframe.rdb.sharding.id.generator.IdGenerator;
+import com.lsm.springboot.domain.CountAge;
 import com.lsm.springboot.domain.Student;
 import com.lsm.springboot.domain.User;
 import com.lsm.springboot.mapper.sharding.StudentMapper;
@@ -8,7 +9,6 @@ import com.lsm.springboot.mapper.sharding.UserMapper;
 import com.lsm.springboot.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -84,5 +84,10 @@ public class UserServiceImpl implements IUserService {
         student.setName("hehe1");
         studentMapper.insert(student);
         throw new IllegalAccessException();
+    }
+
+    @Override
+    public List<CountAge> groupByAge() {
+        return userMapper.groupByAge();
     }
 }

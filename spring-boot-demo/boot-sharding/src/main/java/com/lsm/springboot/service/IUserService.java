@@ -1,5 +1,6 @@
 package com.lsm.springboot.service;
 
+import com.lsm.springboot.domain.CountAge;
 import com.lsm.springboot.domain.User;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,4 +24,6 @@ public interface IUserService {
 
     @Transactional(value = "shardingTransactionManager")
     void transactionTestFailure() throws IllegalAccessException;
+
+    List<CountAge> groupByAge();
 }
