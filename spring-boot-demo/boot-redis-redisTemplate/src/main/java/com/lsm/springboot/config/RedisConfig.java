@@ -41,6 +41,9 @@ public class RedisConfig {
         factory.setPoolConfig(config);
         factory.setHostName(host);
         factory.setPort(port);
+        // 选择数据库
+        factory.setUsePool(true);
+        factory.setDatabase(2);
         log.info("JedisConnectionFactory bean init success.");
         return factory;
     }
