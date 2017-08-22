@@ -27,9 +27,10 @@
         <module>boot-mongodb-data</module>
         <module>boot-shiro</module>
         <module>boot-thymeleaf</module>
+        <module>boot-configuration</module>
         <!--
         
-        <module>boot-thymeleaf</module>-->
+        <module>boot-configuration</module>-->
 		
     </modules>
 
