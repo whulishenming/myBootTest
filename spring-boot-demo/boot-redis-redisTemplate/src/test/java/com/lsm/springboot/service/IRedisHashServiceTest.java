@@ -25,13 +25,17 @@ public class IRedisHashServiceTest extends BaseTest {
 
     @Before
     public void flushDb() {
-        redisTemplate.execute(new RedisCallback<String>() {
+        redisTemplate.execute((RedisConnection connection) -> {
+            connection.flushDb();
+            return "ok";
+        });
+        /*redisTemplate.execute(new RedisCallback<String>() {
             @Override
             public String doInRedis(RedisConnection connection) throws DataAccessException {
                 connection.flushDb();
                 return "ok";
             }
-        });
+        });*/
         Map<String, String> map = new HashMap<>();
         map.put("id", "1001");
         map.put("name", "lishenming");

@@ -29,12 +29,9 @@ public class IRedisZSetServiceTest extends BaseTest {
 
     @Before
     public void flushDb() {
-        redisTemplate.execute(new RedisCallback<String>() {
-            @Override
-            public String doInRedis(RedisConnection connection) throws DataAccessException {
-                connection.flushDb();
-                return "ok";
-            }
+        redisTemplate.execute((RedisConnection connection) -> {
+            connection.flushDb();
+            return "ok";
         });
         Set<ZSetOperations.TypedTuple<String>> tuples = new HashSet<>();
         ZSetOperations.TypedTuple<String> tuple1 = new DefaultTypedTuple<>("nanjing", Double.parseDouble("90"));

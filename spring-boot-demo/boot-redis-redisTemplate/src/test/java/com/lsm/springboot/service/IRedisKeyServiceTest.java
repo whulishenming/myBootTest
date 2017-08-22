@@ -46,12 +46,9 @@ public class IRedisKeyServiceTest extends BaseTest {
 
     @Before
     public void flushDb() {
-        redisTemplate.execute(new RedisCallback<String>() {
-            @Override
-            public String doInRedis(RedisConnection connection) throws DataAccessException {
-                connection.flushDb();
-                return "ok";
-            }
+        redisTemplate.execute((RedisConnection connection) -> {
+            connection.flushDb();
+            return "ok";
         });
         redisStringServiceImpl.set(STRING_KEY, "test_string");
         redisHashServiceImpl.hSet(HASH_KEY, "test_field", "test_value");

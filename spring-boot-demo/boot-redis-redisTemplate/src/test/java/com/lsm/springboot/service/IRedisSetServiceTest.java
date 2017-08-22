@@ -30,12 +30,9 @@ public class IRedisSetServiceTest extends BaseTest {
 
     @Before
     public void flushDb() {
-        redisTemplate.execute(new RedisCallback<String>() {
-            @Override
-            public String doInRedis(RedisConnection connection) throws DataAccessException {
-                connection.flushDb();
-                return "ok";
-            }
+        redisTemplate.execute((RedisConnection connection) -> {
+            connection.flushDb();
+            return "ok";
         });
         redisSetServiceImpl.sAdd(key, "value1", "value5", "value4", "value9", "value2", "value4");
         redisSetServiceImpl.sAdd(key2, "value11", "value5", "value14", "value9", "value12", "value24");

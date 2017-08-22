@@ -6,6 +6,7 @@
 
     <groupId>com.lsm.testSpringBoot</groupId>
     <artifactId>spring-boot-demo</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <modules>

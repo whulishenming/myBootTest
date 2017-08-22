@@ -26,12 +26,9 @@ public class IRedisListServiceTest extends BaseTest {
 
     @Before
     public void flushDb() {
-        redisTemplate.execute(new RedisCallback<String>() {
-            @Override
-            public String doInRedis(RedisConnection connection) throws DataAccessException {
-                connection.flushDb();
-                return "ok";
-            }
+        redisTemplate.execute((RedisConnection connection) -> {
+            connection.flushDb();
+            return "ok";
         });
         redisListServiceImpl.lPush(key, "init 1", "init 3", "init 2", "init 3", "init 4", "init 5", "init 6", "init 3", "init 5", "init 1");
     }
