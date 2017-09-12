@@ -18,6 +18,7 @@
 		<module>boot-sharding</module>
 		<module>boot-swagger2</module>
 		<module>boot-scheduling</module>
+		<module>boot-quartz</module>
         <module>boot-webSocket</module>
         <module>boot-mybatis</module>
 		<module>boot-elasticsearch-data</module>
@@ -30,7 +31,7 @@
         <module>boot-configuration</module>
         <!--
         
-        <module>boot-configuration</module>-->
+        <module>boot-quartz</module>-->
 		
     </modules>
 

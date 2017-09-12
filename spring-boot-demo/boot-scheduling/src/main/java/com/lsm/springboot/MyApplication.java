@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 @EnableScheduling
-@ImportResource("classpath:quartz-scheduled.xml")
+//@ImportResource("classpath:quartz-scheduled.xml")
 public class MyApplication {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(MyApplication.class, args);

@@ -1,11 +1,10 @@
 package com.lsm.springboot.task;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-/**
- * Created by za-lishenming on 2017/5/14.
- */
 @Slf4j
+@Component
 public class ScheduledTest2 {
 
     public void executeFileDownLoadTask() {
