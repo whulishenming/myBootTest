@@ -6,9 +6,13 @@ import java.util.List;
 
 public interface UserService {
 
-    void save(User user);
+    void insert(User user);
 
-    void saveAll(List<User> userList);
+    void batchInsert(List<User> userList);
 
     List<User> findByName(String name);
+
+    void deleteById(String id);
+
+    void removeRecord(String id);
 }

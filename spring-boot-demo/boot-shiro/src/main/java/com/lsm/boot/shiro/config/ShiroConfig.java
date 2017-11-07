@@ -1,5 +1,6 @@
 package com.lsm.boot.shiro.config;
 
+import com.lsm.boot.shiro.shiro.realm.ShiroRealm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,7 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 
         // 必须设置 SecurityManager
-        shiroFilterFactoryBean.setSecurityManager(securityManager);
+//        shiroFilterFactoryBean.setSecurityManager(securityManager);
 
         // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
         shiroFilterFactoryBean.setLoginUrl("/login");
@@ -54,13 +55,13 @@ public class ShiroConfig {
         return shiroFilterFactoryBean;
     }
 
-    @Bean
+   /* @Bean
     public SecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 设置realm.
         securityManager.setRealm(myShiroRealm());
         return securityManager;
-    }
+    }*/
 
     /**
      * 身份认证realm; (这个需要自己写，账号密码校验；权限等)

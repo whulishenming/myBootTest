@@ -1,7 +1,6 @@
 package com.lsm.boot.mongodb.service;
 
 import com.lsm.boot.mongodb.model.User;
-import com.lsm.boot.mongodb.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,69 +11,72 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserServiceTest {
 
     @Autowired
     private UserService userServiceImpl;
-    @Autowired
-    private UserRepository userRepository;
 
     @Test
-    public void save() throws Exception {
+    public void insert() throws Exception {
         User user = new User();
 
         Date now = new Date();
 
-        user.setCreateBy("lsm");
+        user.setCreateBy("lsmlsm");
         user.setCreateTime(now);
-        user.setIsDeleted((byte) 0);
+        user.setIsDeleted(0);
         user.setName("test mongo");
         user.setPassword("123456");
         user.setPhoneNum("18621941234");
-        user.setUpdateBy("lsm");
+        user.setUpdateBy("lsmlsm");
         user.setUpdateTime(now);
 
-        userServiceImpl.save(user);
-
-//        userRepository.save(user);
-
-        System.out.println(user.getId());
+        userServiceImpl.insert(user);
     }
 
     @Test
-    public void saveAll() {
-        List<User> userList = new ArrayList<>();
-        for (int i = 10000; i < 20000; i++) {
+    public void batchInsert() throws Exception {
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
             User user = new User();
 
             Date now = new Date();
 
-            user.setCreateBy("lsm" + i % 11);
+            user.setCreateBy("lsm");
             user.setCreateTime(now);
-            user.setIsDeleted((byte) 0);
-            user.setName("test Name" + i % 13);
+            user.setIsDeleted(0);
+            user.setName("test mongo" + i);
             user.setPassword("123456");
-            user.setPhoneNum("186219" + i);
-            user.setUpdateBy("lsm" + i % 17);
+            user.setPhoneNum("18621941234" + i);
+            user.setUpdateBy("lsm");
             user.setUpdateTime(now);
 
-            userList.add(user);
+            users.add(user);
         }
 
+        userServiceImpl.batchInsert(users);
 
-        userServiceImpl.saveAll(userList);
     }
 
     @Test
-    public void findByName() {
+    public void findByName() throws Exception {
+        List<User> users = userServiceImpl.findByName("test mongo");
 
-        List<User> userList = userServiceImpl.findByName("test Name1");
+        System.out.println(users);
 
-        System.out.println(userList);
+    }
+
+    @Test
+    public void deleteById() throws Exception {
+
+        userServiceImpl.deleteById("5a015daae48d7713db173121");
+    }
+
+    @Test
+    public void removeRecord() throws Exception {
+        userServiceImpl.removeRecord("5a015daae48d7713db173122");
     }
 
 }
